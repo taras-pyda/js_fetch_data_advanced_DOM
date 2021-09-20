@@ -71,20 +71,18 @@ getAllSuccessfulDetails(phonesIds)
   });
 
 const getThreeFastestDetails = async function(idsArr) {
-  const firstFastestDetails = await getFirstReceivedDetails(idsArr);
-  let newIds = idsArr.then(ids => {
-    return ids.filter(newId => newId !== firstFastestDetails.id);
-  });
+  const threeFastestDetails = [];
+  let newIds = idsArr;
 
-  const secondFastestDetails = await getFirstReceivedDetails(newIds);
+  for (let i = 0; i < 3; i++) {
+    threeFastestDetails.push(await getFirstReceivedDetails(newIds));
 
-  newIds = newIds.then(ids => {
-    return ids.filter(newId => newId !== secondFastestDetails.id);
-  });
+    newIds = newIds.then(ids => {
+      return ids.filter(newId => newId !== threeFastestDetails[i].id);
+    });
+  }
 
-  const thirdFastestDetails = await getFirstReceivedDetails(newIds);
-
-  return [firstFastestDetails, secondFastestDetails, thirdFastestDetails];
+  return threeFastestDetails;
 };
 
 getThreeFastestDetails(phonesIds);
